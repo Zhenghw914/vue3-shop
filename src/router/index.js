@@ -7,6 +7,7 @@ import NotFound from '@/views/404.vue'
 const routes = [
   { path: '/', component: Index,redirect: '/login' },
   { path: '/login', component: Login },
+  {path:'/index',component:Index},
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
 ]
 

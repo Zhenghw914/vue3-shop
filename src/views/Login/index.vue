@@ -1,10 +1,37 @@
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
+import { login } from '@/api/login.js'
+import { ElNotification } from 'element-plus'
+import {useRouter} from 'vue-router'
+import { useCookies } from '@vueuse/integrations/useCookies'
+const cookies = useCookies(['locale'])
+console.log(cookies)
+// 获取表单formRef节点
+const formRef = ref({})
+const router = useRouter()
+const rules = {
+  username: [{ required: true, message: '请输入账号' }],
+  password: [{ required: true, message: '请输入密码' }],
+}
 const form = ref({
   username: '',
   password: '',
 })
-const onSubmit = () => {}
+const onSubmit = () => {
+  formRef.value.validate(async (valid, fields) => {
+    if (valid) {
+      let data = await login(form.value).catch(err => Promise.reject(err))
+      ElNotification({
+          message: '登录成功 ',
+          type: 'success',
+      })
+      cookies.set('admin-token',data.data.token)
+      router.push({path:'/index'})
+    } else {
+      return false
+    }
+  })
+}
 </script>
 <template>
   <el-row class="min-h-screen bg-indigo-500">
@@ -21,8 +48,8 @@ const onSubmit = () => {}
         <span>账号密码登录</span>
         <span class="h-[1px] w-16 bg-gray-200"></span>
       </div>
-      <el-form :model="form" class="w-[250px]">
-        <el-form-item>
+      <el-form :model="form" class="w-[250px]" :rules="rules" ref="formRef">
+        <el-form-item prop="username">
           <el-input v-model="form.username" placeholder="请输入用户名">
             <template #prefix>
               <el-icon>
@@ -31,9 +58,9 @@ const onSubmit = () => {}
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="password">
           <el-input v-model="form.password" placeholder="请输入密码">
-          <template #prefix>
+            <template #prefix>
               <el-icon>
                 <Lock />
               </el-icon>
@@ -49,5 +76,4 @@ const onSubmit = () => {}
 </template>
 
 <style>
-
 </style>
