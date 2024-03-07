@@ -2,10 +2,9 @@
 import { ref } from 'vue'
 import { login } from '@/api/login.js'
 import { ElNotification } from 'element-plus'
-import {useRouter} from 'vue-router'
-import { useCookies } from '@vueuse/integrations/useCookies'
-const cookies = useCookies(['locale'])
-console.log(cookies)
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+const store = useStore()
 // 获取表单formRef节点
 const formRef = ref({})
 const router = useRouter()
@@ -20,13 +19,17 @@ const form = ref({
 const onSubmit = () => {
   formRef.value.validate(async (valid, fields) => {
     if (valid) {
-      let data = await login(form.value).catch(err => Promise.reject(err))
-      ElNotification({
+      store.dispatch('login', form.value).then(res => {
+        ElNotification({
           message: '登录成功 ',
           type: 'success',
-      })
-      cookies.set('admin-token',data.data.token)
-      router.push({path:'/index'})
+        })
+        router.push({ path: '/index' })
+      }
+      )
+      // let data = await login(form.value).catch(err => Promise.reject(err))
+
+      // setToken(data.data.token)
     } else {
       return false
     }

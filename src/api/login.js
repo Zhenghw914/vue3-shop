@@ -7,4 +7,11 @@ export function login (data) {
     data
   }) 
 }
+export function getInfo (data) {
+  return request({
+    url:'/getinfo',
+    method: 'post',
+    data
+  }) 
+}
 

@@ -5,7 +5,7 @@ import Login from '@/views/Login/index.vue'
 import NotFound from '@/views/404.vue'
 // 配置路由
 const routes = [
-  { path: '/', component: Index,redirect: '/login' },
+  { path: '/', component: Index,redirect: '/index' },
   { path: '/login', component: Login },
   {path:'/index',component:Index},
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
@@ -16,5 +16,8 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes, // `routes: routes` 的缩写
 })
+
+
+
 
 export default router
